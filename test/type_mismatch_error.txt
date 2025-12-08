@@ -1,0 +1,11 @@
+func main() -> void {
+    local x: integer;
+    local y: float;
+    local z: integer;
+
+    x := 50;
+    y := 3.14;
+    z := x + y;
+
+    WRITE(z);
+}

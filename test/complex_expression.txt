@@ -1,0 +1,15 @@
+func main() -> void {
+    local x: integer;
+    local y: integer;
+    local z: integer;
+    local w: integer;
+    local result: integer;
+
+    x := 100;
+    y := 25;
+    z := 5;
+    w := 2;
+
+    result := x / y + z * w;
+    WRITE(result);
+}

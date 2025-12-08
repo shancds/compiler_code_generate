@@ -1,0 +1,12 @@
+func main() -> void {
+    local x: integer;
+    local y: integer;
+    local z: integer;
+
+    x := 90;
+    y := 6;
+    t := 7;
+    z := x + y;
+
+    WRITE(z);
+}
