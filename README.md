@@ -1,7 +1,4 @@
-bison -d parser.y
-flex scanner.l
-gcc parser.tab.c lex.yy.c ast.c location.c symbol_table.c token.c error.c tac.c tac_support.c -o compiler
-
-
-
-cmd /c "type test\func_main.txt | compiler.exe"
+1. bison -d parser.y
+2. flex scanner.l
+3. gcc parser.tab.c lex.yy.c ast.c location.c symbol_table.c token.c error.c tac.c tac_support.c -o compiler
+4. cmd /c "type test\func_main.txt | compiler.exe"
