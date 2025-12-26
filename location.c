@@ -2,7 +2,7 @@
 #include <string.h>
 #include "location.h"
 
-// ================== DERIVATION PROCESSOR ==================
+
 
 // Global pointer to the last derivation step
 struct DerivationStep* lastDerivationStep = NULL;
@@ -39,9 +39,6 @@ void writeDerivationToFile(char *filePath){
 
     fclose(file);
 }
-
-
-// ================== LOCATION TRACKING ==================
 
 
 
