@@ -1,0 +1,16 @@
+func main() -> void {
+    local x: integer;
+    local y: integer;
+    local result: integer;
+
+    x := 10;
+    y := 10;
+
+    if (x == y) then
+        result := x - y;
+    else
+        result := x + y;
+    ;
+
+    WRITE(result);
+}

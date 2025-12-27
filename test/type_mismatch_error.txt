@@ -1,6 +1,6 @@
 func main() -> void {
     local x: integer;
-    local y: float;
+    local y: Float;
     local z: integer;
 
     x := 50;

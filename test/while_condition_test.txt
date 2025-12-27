@@ -1,0 +1,14 @@
+func main() -> void {
+    local counter: integer;
+    local sum: integer;
+
+    counter := 5;
+    sum := 0;
+
+    while (counter > 0) {
+        sum := sum + counter;
+        counter := counter - 1;
+    };
+
+    WRITE(sum);
+}
