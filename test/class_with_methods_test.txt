@@ -1,0 +1,21 @@
+class Calculator {
+    private attribute value: integer;
+    public func getValue() -> integer;
+    public func setValue(v: integer) -> void;
+};
+
+implement Calculator {
+    func getValue() -> integer {
+        return(value);
+    }
+
+    func setValue(v: integer) -> void {
+        value := v;
+    }
+}
+
+func main() -> void {
+    local x: integer;
+    x := 100;
+    WRITE(x);
+}

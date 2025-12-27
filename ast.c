@@ -294,7 +294,7 @@ void print_ast_recursive(ASTNode *node, int indent)
             break;
 
         case NODE_CLASS_DECL:
-            printf("Struct Declaration: %s\n", node->data.class_decl.name);
+            printf("Class Declaration: %s\n", node->data.class_decl.name);
             print_ast_recursive(node->data.class_decl.members, indent + 1);
             break;
 
@@ -602,7 +602,7 @@ void print_ast_recursive_to_file(ASTNode *node, int indent, FILE *file)
             break;
 
         case NODE_CLASS_DECL:
-            fprintf(file, "Struct Declaration: %s\n", node->data.class_decl.name);
+            fprintf(file, "Class Declaration: %s\n", node->data.class_decl.name);
             print_ast_recursive_to_file(node->data.class_decl.members, indent + 1, file);
             break;
 

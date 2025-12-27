@@ -1,0 +1,10 @@
+class Point {
+    public attribute x: integer;
+    public attribute y: integer;
+};
+
+func main() -> void {
+    local a: integer;
+    a := 10;
+    WRITE(a);
+}

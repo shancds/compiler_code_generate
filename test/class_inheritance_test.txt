@@ -1,0 +1,14 @@
+class Shape {
+    public attribute width: integer;
+    public attribute height: integer;
+};
+
+class Rectangle isa Shape {
+    public attribute area: integer;
+};
+
+func main() -> void {
+    local result: integer;
+    result := 50;
+    WRITE(result);
+}
