@@ -1,0 +1,14 @@
+func add(a: integer, b: integer) -> integer {
+    local result: integer;
+    if (a == 0) then
+        result := b ;
+    else
+        result := a + b;
+    ;
+}
+
+func main() -> void {
+    local result: integer;
+    
+    result := add(1);
+}

@@ -376,7 +376,7 @@ int main() {
 
     if (hasErrors())
     {
-        printf("%s\n", "There were errors on your source code.");
+        printf("%s\n", "An error occurred in source code...");
         return 0;
     }
     createIntermediateCode();
@@ -386,7 +386,7 @@ int main() {
 void createAbstractSyntaxTree()
 {
      
-    FILE *file = fopen("./output/abstract_syntax_tree_02.txt", "w");
+    FILE *file = fopen("./output/02_abstract_syntax_tree.txt", "w");
     if (file == NULL)
     {
         printf("Error opening file for writing!\n");
@@ -403,11 +403,10 @@ void createSymbolTable()
     SymbolTable *global_table = create_symbol_table(NULL);
     
     // Build the symbol table starting from the AST root
-    build_symbol_table_phase1(ast, global_table, NULL);
-    build_symbol_table_phase2(ast, global_table, NULL);
+    build_symbol_table(ast, global_table, NULL);
 
     // Print the symbol table
-    FILE *symOutFile = fopen("./output/symbol_table_03.txt", "w");
+    FILE *symOutFile = fopen("./output/03_symbol_table.txt", "w");
     if (symOutFile == NULL)
     {
         printf("Error opening file for writing!\n");
@@ -425,7 +424,7 @@ void createIntermediateCode()
     generate_tac_recursive(&tac_list, ast, 0);
 
 
-   FILE *tacFile = fopen("./output/three_address_code_04.txt", "w");
+   FILE *tacFile = fopen("./output/04_three_address_code.txt", "w");
     if (tacFile == NULL)
     {
         printf("Error opening file for writing!\n");
@@ -437,7 +436,7 @@ void createIntermediateCode()
     fclose(tacFile); 
 
 
-    FILE *asmFile = fopen("./output/assembly_04.txt", "w");
+    FILE *asmFile = fopen("./output/05_assembly.txt", "w");
     if (asmFile == NULL)
     {
         printf("Error opening file for writing!\n");
@@ -447,7 +446,7 @@ void createIntermediateCode()
     fclose(asmFile); 
 
 
-    const char *asm_file = "./output/assembly_04.txt"; // Name of the assembly file
+    const char *asm_file = "./output/05_assembly.txt"; // Name of the assembly file
     const char *output_file = "output";  // Desired name for the binary
 
     assemble_and_run(asm_file, output_file);

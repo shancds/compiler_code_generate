@@ -8,7 +8,7 @@
 
 
 
-// Helper function to create a new TAC instruction
+
 TAC *create_tac(char *instruction)
 {
     TAC *new_tac = (TAC *)malloc(sizeof(TAC));
@@ -17,7 +17,7 @@ TAC *create_tac(char *instruction)
     return new_tac;
 }
 
-// Function to append a TAC instruction to the list
+
 void append_tac(TAC **tac_list, TAC *new_tac)
 {
     if (!*tac_list)
@@ -34,7 +34,7 @@ void append_tac(TAC **tac_list, TAC *new_tac)
         temp->next = new_tac;
     }
 }
-// Function to print the generated TAC list
+
 void print_tac(TAC **tac_list, FILE *file)
 {
     TAC *temp = *tac_list;
@@ -50,17 +50,17 @@ int label_count = 1;
 // Function to create a temporary variable with a unique name
 char *create_temp_variable()
 {
-    // Allocate memory for the temporary variable name (e.g., "t1", "t2", ...)
+    
     char *temp_var = (char *)malloc(50 * sizeof(char)); // Ensure enough space for the name
 
-    // Generate the name for the temporary variable (e.g., "t1", "t2", "t3", ...)
+    
     snprintf(temp_var, 50, "t%d", tac_count++);
 
-    // Return the dynamically allocated memory containing the variable name
+   
     return temp_var;
 }
 
-// Recursive function to generate the TAC list from the AST
+
 char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
 {
     if (!node)
@@ -96,7 +96,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
         }
         case NODE_ASSIGN_STAT:
         {
-            // Recursively generate TAC for the expression on the right-hand side
+            
             char *expr_result = generate_tac_recursive(tac_list, node->data.assign_stat.expr, indent + 1);
 
             char assignStatInstruction[500];
@@ -169,7 +169,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
                 break;
             }
 
-            // Handle READ operation
+            
             if (strcmp(node->data.io_stat.io_type, "READ") == 0)
             {
                 const char *var_type = node->data.io_stat.expr->data.variable.symbol->type;
@@ -191,13 +191,13 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
 
         case NODE_ADD:
         {
-            // Generate TAC for the left operand
+            
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
-            // Create a new temporary variable for the result
+            
             char *tempVar = (char *)malloc(200 * sizeof(char));
             strcpy(tempVar, create_temp_variable());
 
@@ -205,7 +205,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_add_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -215,10 +215,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
 
         case NODE_SUBTRACT:
         {
-            // Generate TAC for the left operand
+            
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -229,7 +229,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_sub_instruction(right_result,left_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -239,10 +239,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
 
         case NODE_MULTIPLY:
         {
-            // Generate TAC for the left operand
+            
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -253,7 +253,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_mul_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -262,10 +262,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
         }
         case NODE_DIVIDE:
         {
-            // Generate TAC for the left operand
+            
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -276,7 +276,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_div_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -284,10 +284,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             return tempVar;
         }
         case NODE_AND:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -298,7 +298,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_and_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -307,10 +307,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
         }
 
         case NODE_OR:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -321,7 +321,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_or_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -330,10 +330,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
         }
 
         case NODE_EQ:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -344,7 +344,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_eq_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -352,10 +352,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             return tempVar;
         }
         case NODE_NEQ:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -366,7 +366,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_neq_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -374,10 +374,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             return tempVar;
         }
         case NODE_LT:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -388,7 +388,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_lt_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -396,10 +396,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             return tempVar;
         }
         case NODE_GT:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -410,7 +410,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_gt_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -418,10 +418,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             return tempVar;
         }
         case NODE_LEQ:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -432,7 +432,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_leq_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -440,10 +440,10 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             return tempVar;
         }
         case NODE_GEQ:
-        { // Generate TAC for the left operand
+        { 
             char *left_result = generate_tac_recursive(tac_list, node->data.op.left, indent);
 
-            // Generate TAC for the right operand
+            
             char *right_result = generate_tac_recursive(tac_list, node->data.op.right, indent);
 
             // Create a new temporary variable for the result
@@ -454,7 +454,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             strcpy(tempVarDeclInstruction, create_tac_ins_allocate(tempVar));
             append_tac(tac_list, create_tac(tempVarDeclInstruction));
 
-            // Generate TAC for the addition operation
+            
             char addInstruction[500];
             strcpy(addInstruction, generate_tac_geq_instruction(left_result, right_result, tempVar));
             append_tac(tac_list, create_tac(addInstruction));
@@ -473,14 +473,14 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             snprintf(instruction, sizeof(instruction), "%s", startLabel);
             append_tac(tac_list, create_tac(instruction));
 
-            // Generate TAC for the condition of the while loop
+            
             char *condition_result = generate_tac_recursive(tac_list, node->data.while_stat.condition, indent);
 
             // Generate the conditional jump: if the condition is false, exit the loop
             snprintf(instruction, sizeof(instruction), "if %s == 0 goto %s", condition_result, endLabel);
             append_tac(tac_list, create_tac(instruction));
 
-            // Generate TAC for the body of the while loop
+            
             generate_tac_recursive(tac_list, node->data.while_stat.body, indent + 1);
 
             // Generate the jump to the start to recheck the condition
@@ -506,7 +506,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             char *elseLabel = generate_tac_if_else_label(&label_count);
             char *endLabel = generate_tac_if_end_label(&label_count);
 
-            // Generate TAC for the condition of the if statement
+            
             char *condition_result = generate_tac_recursive(tac_list, node->data.if_stat.condition, indent);
 
             // Conditional jump: if the condition is false, skip the then branch and jump to the else or end
@@ -514,7 +514,7 @@ char *generate_tac_recursive(TAC **tac_list, ASTNode *node, int indent)
             snprintf(instruction, sizeof(instruction), "if %s == 0 goto %s", condition_result, elseLabel);
             append_tac(tac_list, create_tac(instruction));
 
-            // Generate TAC for the then branch
+            
             snprintf(instruction, sizeof(instruction), "%s", thenLabel);
             append_tac(tac_list, create_tac(instruction));
             generate_tac_recursive(tac_list, node->data.if_stat.then_branch, indent + 1);
@@ -554,9 +554,6 @@ int write_float_included = 0;   // Flag for "print_float"
 void generate_assembly(TAC **tac_list, FILE *output_file) {
     if (!tac_list || !output_file) return;
 
-    // ----------------------------
-    // .data section
-    // ----------------------------
     fprintf(output_file, "section .data\n");
     fprintf(output_file, "    integer_format db \"%%d\",10,0\n");
     fprintf(output_file, "    float_format db \"%%f\",10,0\n");
@@ -587,9 +584,7 @@ void generate_assembly(TAC **tac_list, FILE *output_file) {
         current = current->next;
     }
 
-    // ----------------------------
-    // .text section
-    // ----------------------------
+  
     fprintf(output_file, "\nsection .text\n");
     fprintf(output_file, "global main, print_integer, print_float\n");
     fprintf(output_file, "extern printf, ExitProcess\n");
@@ -679,9 +674,7 @@ void generate_assembly(TAC **tac_list, FILE *output_file) {
 
     
 
-    // ----------------------------
-    // Subroutine: print_integer
-    // ----------------------------
+
     fprintf(output_file, "\nprint_integer:\n");
     fprintf(output_file, "    mov rcx, integer_format\n");
     fprintf(output_file, "    mov rdx, rax\n");
@@ -689,9 +682,7 @@ void generate_assembly(TAC **tac_list, FILE *output_file) {
     fprintf(output_file, "    call printf\n");
     fprintf(output_file, "    ret\n");
 
-    // ----------------------------
-    // Subroutine: print_float
-    // ----------------------------
+
     fprintf(output_file, "\nprint_float:\n");
     fprintf(output_file, "    mov rcx, float_format\n");
     fprintf(output_file, "    movq xmm1, [rax]\n");
@@ -707,43 +698,43 @@ void generate_assembly(TAC **tac_list, FILE *output_file) {
 void assemble_and_run(const char *asm_file, const char *output_file)
 {
     
-    char command[1024];
+    // char command[1024];
 
-    // 1. Assemble using NASM for Windows x64 ABI
-    snprintf(command, sizeof(command),
-        "nasm -f win64 -o %s.obj %s", output_file, asm_file);
+    // // 1. Assemble using NASM for Windows x64 ABI
+    // snprintf(command, sizeof(command),
+    //     "nasm -f win64 -o %s.obj %s", output_file, asm_file);
 
-    printf("Assembling: %s\n", command);
+    // printf("Assembling: %s\n", command);
 
-    if (system(command) != 0)
-    {
-        fprintf(stderr, "Error: Assembly failed.\n");
-        return;
-    }
+    // if (system(command) != 0)
+    // {
+    //     fprintf(stderr, "Error: Assembly failed.\n");
+    //     return;
+    // }
 
-    // 2. Link using MinGW GCC and link kernel32 for ExitProcess
-    snprintf(command, sizeof(command),
-        "gcc -o %s.exe %s.obj -lkernel32", output_file, output_file);
+    // // 2. Link using MinGW GCC and link kernel32 for ExitProcess
+    // snprintf(command, sizeof(command),
+    //     "gcc -o %s.exe %s.obj -lkernel32", output_file, output_file);
 
-    printf("Linking: %s\n", command);
+    // printf("Linking: %s\n", command);
 
-    if (system(command) != 0)
-    {
-        fprintf(stderr, "Error: Linking failed.\n");
-        return;
-    }
+    // if (system(command) != 0)
+    // {
+    //     fprintf(stderr, "Error: Linking failed.\n");
+    //     return;
+    // }
 
-    // 3. Run the executable
-    snprintf(command, sizeof(command),
-        ".\\%s.exe", output_file);
+    // // 3. Run the executable
+    // snprintf(command, sizeof(command),
+    //     ".\\%s.exe", output_file);
 
-    printf("Running: %s\n", command);
+    // printf("Running: %s\n", command);
 
-    if (system(command) != 0)
-    {
-        fprintf(stderr, "", output_file);
-        return;
-    }
+    // if (system(command) != 0)
+    // {
+    //     fprintf(stderr, "", output_file);
+    //     return;
+    // }
 
     printf("Execution completed successfully.\n");
 }

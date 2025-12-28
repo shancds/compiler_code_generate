@@ -5,7 +5,7 @@
 
 void initializeTokenController()
 {
-    tokenOutFile = fopen("./output/tokens_01.txt", "w");
+    tokenOutFile = fopen("./output/01_tokens.txt", "w");
     if (tokenOutFile == NULL)
     {
         printf("Error opening file for writing!\n");

@@ -1,10 +1,10 @@
-/* symbol_table.c */
+
 
 #include "symbol_table.h"
 #include "ast.h"
 #include "error.h"
 
-/* Helper function to get symbol kind name */
+
 const char *get_symbol_kind_name(SymbolKind kind)
 {
     switch (kind)
@@ -24,7 +24,7 @@ const char *get_symbol_kind_name(SymbolKind kind)
     }
 }
 
-/* Create a new symbol table */
+
 SymbolTable *create_symbol_table(SymbolTable *parent)
 {
     SymbolTable *table = (SymbolTable *)malloc(sizeof(SymbolTable));
@@ -34,20 +34,20 @@ SymbolTable *create_symbol_table(SymbolTable *parent)
     return table;
 }
 
-/* Free all symbol tables */
+
 void free_symbol_tables(SymbolTable *table)
 {
     if (!table)
         return;
 
-    /* Free symbols in the current table */
+    
     Symbol *sym = table->symbols;
     while (sym)
     {
         Symbol *temp = sym;
         sym = sym->next;
 
-        /* Free parameters if any */
+        
         if (temp->kind == SYMBOL_FUNC && temp->params)
         {
             Symbol *param = temp->params;
@@ -61,7 +61,7 @@ void free_symbol_tables(SymbolTable *table)
             }
         }
 
-        /* Free function scope if any */
+        
         if (temp->kind == SYMBOL_FUNC && temp->function_scope)
         {
             free_symbol_tables(temp->function_scope);
@@ -72,11 +72,11 @@ void free_symbol_tables(SymbolTable *table)
         free(temp);
     }
 
-    /* Free the current table */
+    
     free(table);
 }
 
-/* Create a new symbol */
+
 Symbol *create_symbol(const char *name, const char *type, SymbolKind kind, int scope_level)
 {
     Symbol *symbol = (Symbol *)malloc(sizeof(Symbol));
@@ -90,14 +90,14 @@ Symbol *create_symbol(const char *name, const char *type, SymbolKind kind, int s
     return symbol;
 }
 
-/* Insert a symbol into the symbol table */
+
 void insert_symbol(SymbolTable *table, Symbol *symbol)
 {
     symbol->next = table->symbols;
     table->symbols = symbol;
 }
 
-/* Lookup a symbol in the symbol table */
+
 Symbol *lookup_symbol(SymbolTable *table, const char *name)
 {
     SymbolTable *current = table;
@@ -114,10 +114,10 @@ Symbol *lookup_symbol(SymbolTable *table, const char *name)
         }
         current = current->parent;
     }
-    return NULL; /* Not found */
+    return NULL; 
 }
 
-/* Print the symbol table (for debugging) */
+
 void print_symbol_table(SymbolTable *table, int indent, FILE *file)
 {
     if (!table)
@@ -128,36 +128,36 @@ void print_symbol_table(SymbolTable *table, int indent, FILE *file)
     if (!sym)
         return;
         
-    /* Indentation for the current scope */
+    
     // fprintf(file, "\n");
     for (int i = 0; i < indent; i++)
         fprintf(file, "    ");
 
     fprintf(file, "Scope Level %d:\n", table->scope_level);
 
-    /* Print symbols in the current scope */
+    
 
     while (sym)
     {
-        /* Indent symbols one level more */
+        
         for (int i = 0; i < indent + 1; i++)
             fprintf(file, "    ");
         fprintf(file, "Name: %s, Type: %s, Kind: %s\n", sym->name, sym->type, get_symbol_kind_name(sym->kind));
 
-        /* If the symbol is a function, print its parameters and its scope */
+        
         if (sym->kind == SYMBOL_FUNC)
         {
-            /* Print parameters */
+            
             Symbol *param = sym->params;
             while (param)
             {
                 for (int i = 0; i < indent + 2; i++)
-                    fprintf(file, "    "); /* Indent parameters two levels more */
+                    fprintf(file, "    "); 
                 fprintf(file, "Param: %s, Type: %s\n", param->name, param->type);
                 param = param->next;
             }
 
-            /* Print the function's scope */
+            
             if (sym->function_scope)
             {
                 print_symbol_table(sym->function_scope, indent + 2, file);
@@ -165,17 +165,17 @@ void print_symbol_table(SymbolTable *table, int indent, FILE *file)
         }
         if (sym->kind == SYMBOL_CLASS)
         {
-            /* Print parameters */
+            
             Symbol *param = sym->params;
             while (param)
             {
                 for (int i = 0; i < indent + 2; i++)
-                    fprintf(file, "    "); /* Indent parameters two levels more */
+                    fprintf(file, "    "); 
                 fprintf(file, "Param: %s, Type: %s\n", param->name, param->type);
                 param = param->next;
             }
 
-            /* Print the class scope */
+            
             if (sym->class_scope)
             {
                 print_symbol_table(sym->class_scope, indent + 2, file);
@@ -188,8 +188,8 @@ void print_symbol_table(SymbolTable *table, int indent, FILE *file)
     }
 }
 
-/* Build the symbol table by traversing the AST */
-void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol *current_function)
+
+void build_symbol_table(ASTNode *node, SymbolTable *current_table, Symbol *current_function)
 {
     if (!node)
         return;
@@ -198,29 +198,29 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
     {
     case NODE_CLASS_DECL:
     {
-        /* Get the class name */
+        
         const char *class_name = node->data.class_decl.name;
 
-        /* Check for redefinition */
+        
         Symbol *existingSymbol = lookup_symbol(current_table, class_name);
         if (existingSymbol != NULL)
         {
-            fprintf(errorMessageFile, "Error: Attempt to redefine class '%s'\n in row:%d col:%d", class_name, node->locationY, node->locationX);
+            fprintf(errorMessageFile, "Error: Attempt to redefine class '%s' in row:%d col:%d\n", class_name, node->locationY, node->locationX);
             break;
         }
 
-        /* Create a symbol for the class */
+        
         Symbol *symbol = create_symbol(
             class_name,
-            class_name, /* Type name is the same as class name */
+            class_name, 
             SYMBOL_CLASS,
             current_table->scope_level);
 
-        /* Insert the class symbol into the current symbol table */
+        
         insert_symbol(current_table, symbol);
 
-        /* Create a new scope for the class members (optional) */
-        /* If you want class members to be in their own scope */
+        
+        
         SymbolTable *class_scope = create_symbol_table(current_table);
 
         // Process class inheritance
@@ -252,13 +252,13 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
             }
         }
 
-        /* Process class members */
+        
         ASTNode *member_node = node->data.class_decl.members;
         while (member_node)
         {
             if (member_node->type == NODE_VISIBILITY && member_node->next->type == NODE_VAR_DECL)
             {
-                /* Check for redefinition */
+                
                 Symbol *existingSymbol = lookup_symbol(class_scope, member_node->next->data.var_decl.name);
                 if (existingSymbol != NULL)
                 {
@@ -266,7 +266,7 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
                 }
                 else
                 {
-                    /* Get the type name from the type node */
+                    
                     const char *type_name = member_node->next->data.var_decl.type->data.type_node.type_name;
 
                     Symbol *typeSymbol = lookup_symbol(current_table, type_name);
@@ -280,7 +280,7 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
                         }
                     }
 
-                    /* Insert into the current symbol table */
+                    
                     Symbol *existingSymbol = lookup_symbol(current_table, member_node->next->data.var_decl.name);
                     if (existingSymbol != NULL)
                     {
@@ -288,7 +288,7 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
                         break;
                     }
 
-                    /* Create a symbol for the variable */
+                    
                     Symbol *symbol = create_symbol(
                         member_node->next->data.var_decl.name,
                         type_name,
@@ -299,7 +299,7 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
                 }
             }
 
-            /* Each member is a variable declaration */
+            
             member_node = member_node->next->next;
         }
 
@@ -309,10 +309,10 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
 
     case NODE_IMPL_DEF:
     {
-        /* Get the type name */
+        
         const char *type_name = node->data.impl_def.name;
 
-        /* Lookup the type to ensure it exists */
+        
         Symbol *type_symbol = lookup_symbol(current_table, type_name);
         if (!type_symbol)
         {
@@ -320,27 +320,27 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
             break;
         }
 
-        /* Ensure that the type is a class (or interface if applicable) */
+        
         if (type_symbol->kind != SYMBOL_CLASS /* && type_symbol->kind != SYMBOL_INTERFACE */)
         {
             fprintf(errorMessageFile, "Error: Type '%s' is not a class or interface in row:%d col:%d\n", type_name, node->locationY, node->locationX);
             break;
         }
 
-        /* Process the functions defined in the implementation */
+        
         ASTNode *func_node = node->data.impl_def.methods;
 
-        /* Each function is processed as usual */
-        build_symbol_table_phase1(func_node, type_symbol->class_scope, NULL);
+        
+        build_symbol_table(func_node, type_symbol->class_scope, NULL);
         func_node = func_node->next;
 
         break;
     }
 
-    /* Handle variable declarations */
+    
     case NODE_VAR_DECL:
     {
-        /* Get the type name from the type node */
+        
         const char *type_name = node->data.var_decl.type->data.type_node.type_name;
 
         Symbol *typeSymbol = lookup_symbol(current_table, type_name);
@@ -354,7 +354,7 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
             }
         }
 
-        /* Insert into the current symbol table */
+        
         Symbol *existingSymbol = lookup_symbol(current_table, node->data.variable.name);
         if (existingSymbol != NULL)
         {
@@ -362,7 +362,7 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
             break;
         }
 
-        /* Create a symbol for the variable */
+        
         Symbol *symbol = create_symbol(
             node->data.var_decl.name,
             type_name,
@@ -373,10 +373,10 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
         break;
     }
 
-    /* Handle function declarations */
+    
     case NODE_FUNC_DECL:
     {
-        /* Get the return type name */
+        
         const char *return_type = node->data.func_decl.return_type
                                       ? node->data.func_decl.return_type->data.type_node.type_name
                                       : "void";
@@ -392,7 +392,7 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
         
         
 
-        /* Insert into the current symbol table */
+        
         Symbol *existingSymbol = lookup_symbol(current_table, node->data.func_decl.name);
         if (existingSymbol != NULL)
         {
@@ -400,14 +400,14 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
             break;
         }
 
-        /* Create a symbol for the function */
+        
         Symbol *symbol = create_symbol(
             node->data.func_decl.name,
             return_type,
             SYMBOL_FUNC,
             current_table->scope_level);
 
-        /* Handle function parameters */
+        
         ASTNode *param_node = node->data.func_decl.params;
         Symbol *param_list = NULL;
         Symbol **param_list_tail = &param_list;
@@ -419,21 +419,21 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
                 param_type,
                 SYMBOL_PARAM,
                 current_table->scope_level);
-            /* Add to the end of the parameter list */
+            
             *param_list_tail = param_symbol;
             param_list_tail = &(param_symbol->next);
             param_node = param_node->next;
         }
         // symbol->params = param_list;
 
-        /* Create a new scope for the function */
+        
         SymbolTable *function_scope = create_symbol_table(current_table);
 
-        /* Add parameters to the function scope */
+        
         Symbol *param_iter = param_list;
         while (param_iter)
         {
-            /* Create a new symbol for the parameter in the function scope */
+            
             Symbol *param_in_scope = create_symbol(
                 param_iter->name,
                 param_iter->type,
@@ -443,19 +443,19 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
             param_iter = param_iter->next;
         }
 
-        /* Set the function's scope in the symbol */
+        
         symbol->function_scope = function_scope;
 
-        /* Insert function symbol into the current symbol table */
+        
         insert_symbol(current_table, symbol);
 
-        /* Traverse function body */
-        build_symbol_table_phase1(node->data.func_decl.body, function_scope, symbol);
+        
+        build_symbol_table(node->data.func_decl.body, function_scope, symbol);
 
         break;
     }
 
-    /* Handle variable usage */
+    
     case NODE_VAR:
     {
         Symbol *symbol = lookup_symbol(current_table, node->data.variable.name);
@@ -466,19 +466,19 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
         }
         else
         {
-            node->data.variable.symbol = symbol; /* Link the symbol to the AST node */
+            node->data.variable.symbol = symbol; 
         }
         break;
     }
 
-    /* Handle assignment statements */
+    
     case NODE_ASSIGN_STAT:
     {
-        /* Traverse the variable and expression */
-        build_symbol_table_phase1(node->data.assign_stat.var, current_table, current_function);
-        build_symbol_table_phase1(node->data.assign_stat.expr, current_table, current_function);
+        
+        build_symbol_table(node->data.assign_stat.var, current_table, current_function);
+        build_symbol_table(node->data.assign_stat.expr, current_table, current_function);
 
-        /* Get types */
+        
         const char *var_type = get_expression_type(node->data.assign_stat.var, current_table);
         const char *expr_type = get_expression_type(node->data.assign_stat.expr, current_table);
         if (!are_types_compatible(var_type, expr_type) && var_type != NULL && expr_type != NULL)
@@ -488,26 +488,26 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
         break;
     }
 
-        /* Handle return statements */
+        
     case NODE_RETURN_STAT:
     {
-        /* Traverse the return expression */
-        build_symbol_table_phase1(node->data.return_stat.expr, current_table, current_function);
+        
+        build_symbol_table(node->data.return_stat.expr, current_table, current_function);
 
-        /* Get the type of the return expression */
+        
         const char *expr_type = get_expression_type(node->data.return_stat.expr, current_table);
 
-        /* Check if we're inside a function */
+        
         if (current_function == NULL)
         {
             fprintf(errorMessageFile, "Error: Return statement not inside a function in row:%d col:%d\n", node->locationY, node->locationX);
         }
         else
         {
-            /* Get the function's declared return type */
+            
             const char *func_return_type = current_function->type;
 
-            /* Check if types are compatible */
+            
             if (!are_types_compatible(expr_type, func_return_type))
             {
                 fprintf(errorMessageFile, "Type error: Return type '%s' does not match function return type '%s' in row:%d col:%d\n",
@@ -518,32 +518,29 @@ void build_symbol_table_phase1(ASTNode *node, SymbolTable *current_table, Symbol
         break;
     }
 
-    /* Handle other nodes recursively */
+    
     default:
     {
-        /* Traverse child nodes if they exist */
+        
         if (node->data.op.left)
         {
-            build_symbol_table_phase1(node->data.op.left, current_table, current_function);
+            build_symbol_table(node->data.op.left, current_table, current_function);
         }
         if (node->data.op.right)
         {
-            build_symbol_table_phase1(node->data.op.right, current_table, current_function);
+            build_symbol_table(node->data.op.right, current_table, current_function);
         }
         break;
     }
     }
 
-    /* Traverse siblings */
+    
     if (node->next)
     {
-        build_symbol_table_phase1(node->next, current_table, current_function);
+        build_symbol_table(node->next, current_table, current_function);
     }
 }
 
-void build_symbol_table_phase2(ASTNode *node, SymbolTable *current_table, Symbol *current_function) {}
-
-/* Get the type of an expression */
 const char *get_expression_type(ASTNode *node, SymbolTable *current_table)
 {
     if (!node)
@@ -551,15 +548,15 @@ const char *get_expression_type(ASTNode *node, SymbolTable *current_table)
 
     switch (node->type)
     {
-    /* Handle integer literals */
+    
     case NODE_LITERAL_INT:
         return "integer";
 
-    /* Handle floating-point literals */
+    
     case NODE_LITERAL_FLOAT:
         return "float";
 
-    /* Handle variables */
+    
     case NODE_VAR:
     {
         Symbol *symbol = lookup_symbol(current_table, node->data.variable.name);
@@ -573,28 +570,28 @@ const char *get_expression_type(ASTNode *node, SymbolTable *current_table)
         }
     }
 
-    /* Handle binary arithmetic operations */
+    
     case NODE_ADD:
     case NODE_SUBTRACT:
     case NODE_MULTIPLY:
     case NODE_DIVIDE:
     {
-        /* Get types of left and right operands */
+        
         const char *left_type = get_expression_type(node->data.op.left, current_table);
         const char *right_type = get_expression_type(node->data.op.right, current_table);
 
-        /* Check if types are compatible */
+        
         if (!are_types_compatible(left_type, right_type))
         {
             fprintf(errorMessageFile, "Type error: Incompatible types '%s' and '%s' in arithmetic operation in row:%d col:%d\n", left_type, right_type, node->locationY, node->locationX);
             return NULL;
         }
 
-        /* Return the common type */
+        
         return left_type;
     }
 
-    /* Handle logical operations */
+    
     case NODE_AND:
     case NODE_OR:
     case NODE_EQ:
@@ -604,27 +601,27 @@ const char *get_expression_type(ASTNode *node, SymbolTable *current_table)
     case NODE_LEQ:
     case NODE_GEQ:
     {
-        /* Get types of left and right operands */
+        
         const char *left_type = get_expression_type(node->data.op.left, current_table);
         const char *right_type = get_expression_type(node->data.op.right, current_table);
 
-        /* Check if types are compatible */
+        
         if (!are_types_compatible(left_type, right_type))
         {
             fprintf(errorMessageFile, "Type error: Incompatible types '%s' and '%s' in logical operation in row:%d col:%d\n", left_type, right_type, node->locationY, node->locationX);
             return NULL;
         }
 
-        /* Logical operations result in int */
+        
         return "integer";
     }
 
-    /* Handle unary operations */
+    
     case NODE_NOT:
     {
         const char *expr_type = get_expression_type(node->data.op.left, current_table);
-        /* For arithmetic negation, type remains the same */
-        /* For logical NOT, ensure the type is bool */
+        
+        
         if (node->type == NODE_NOT && strcmp(expr_type, "bool") != 0)
         {
             fprintf(errorMessageFile, "Type error: 'not' operator requires a boolean expression in row:%d col:%d\n", node->locationY, node->locationX);
@@ -633,7 +630,7 @@ const char *get_expression_type(ASTNode *node, SymbolTable *current_table)
         return expr_type;
     }
 
-    /* Handle function calls */
+    
     case NODE_FUNC_CALL:
     {
         Symbol *symbol = lookup_symbol(current_table, node->data.func_call.name);
@@ -643,7 +640,7 @@ const char *get_expression_type(ASTNode *node, SymbolTable *current_table)
             return NULL;
         }
 
-        /* Check argument types */
+        
         ASTNode *arg_node = node->data.func_call.params;
         Symbol *param_symbol = symbol->params;
 
@@ -659,26 +656,26 @@ const char *get_expression_type(ASTNode *node, SymbolTable *current_table)
             param_symbol = param_symbol->next;
         }
 
-        /* Check for mismatched number of arguments */
+        
         if (arg_node || param_symbol)
         {
             fprintf(errorMessageFile, "Error: Mismatched number of arguments in function call to '%s' in row:%d col:%d\n", symbol->name, node->locationY, node->locationX);
             return NULL;
         }
 
-        /* Return the return type of the function */
+        
         return symbol->type;
     }
 
-        /* Handle other expression types as needed */
-        /* Add cases for array access, class fields, etc., if applicable */
+        
+        
 
     default:
         fprintf(errorMessageFile, "Error: Unsupported expression type in get_expression_type in row:%d col:%d\n", node->locationY, node->locationX);
         return NULL;
     }
 }
-/* Check if two types are compatible */
+
 int are_types_compatible(const char *type1, const char *type2)
 {
     if (!type1 || !type2)
@@ -691,6 +688,6 @@ int are_types_compatible(const char *type1, const char *type2)
         return 1;
     }
 
-    /* For simplicity, we consider types compatible if their names match */
+    
     return strcmp(type1, type2) == 0;
 }

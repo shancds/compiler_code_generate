@@ -4,9 +4,9 @@ func main() -> void {
     local result: integer;
 
     x := 10;
-    y := 10;
+    y := 2;
 
-    if (x == y) then
+    if (y == 0) then
         result := x - y;
     else
         result := x + y;
